@@ -8,8 +8,8 @@ import numpy as np
 
 x_train = x_train.astype('float32') / 255.
 x_test = x_test.astype('float32') / 255.
-x_train = np.reshape(x_train, (len(x_train), 28, 28, 1))  # adapt this if using `channels_first` image data format
-x_test = np.reshape(x_test, (len(x_test), 28, 28, 1))  # adapt this if using `channels_first` image data format
+x_train = np.reshape(x_train, (len(x_train), 48 48, 3)) 
+x_test = np.reshape(x_test, (len(x_test), 48, 48, 3))
 
 np.save('x_train')
 
@@ -22,15 +22,13 @@ x_test_noisy = np.clip(x_test_noisy, 0., 1.)
 
 
 def train_model():
-    input_img = Input(shape=(28, 28, 1))  # adapt this if using `channels_first` image data format
+    input_img = Input(shape=(48, 48, 3)) 
     x = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
     x = MaxPooling2D((2, 2), padding='same')(x)
     x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
     x = MaxPooling2D((2, 2), padding='same')(x)
     x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
     encoded = MaxPooling2D((2, 2), padding='same', name='encoder')(x)
-
-    # at this point the representation is (4, 4, 8) i.e. 128-dimensional
 
     x = Conv2D(8, (3, 3), activation='relu', padding='same')(encoded)
     x = UpSampling2D((2, 2))(x)
